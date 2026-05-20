@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "myapp"
+        IMAGE_TAG = "v1"
+    }
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/your-username/your-repo.git'
+            }
+        }
+
+        stage('Check Docker') {
+            steps {
+                bat 'docker --version'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                bat 'docker run -d -p 8080:80 --name mycontainer %IMAGE_NAME%:%IMAGE_TAG%'
+            }
+        }
+
+        stage('Show Running Containers') {
+            steps {
+                bat 'docker ps'
+            }
+        }
+    }
+}
